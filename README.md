@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# Constitutional Rights Research Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern web application for searching and exploring U.S. civil rights case law. This platform provides researchers, students, and legal professionals with an intuitive interface to search through court opinions related to civil rights.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Advanced Search**: Search across court opinions with filtering by court, date range, and more
+- **User Authentication**: Create an account to save searches and favorite cases
+- **Responsive Design**: Fully responsive interface that works on desktop, tablet, and mobile devices
+- **Dark Mode**: Toggle between light and dark themes for comfortable reading in any environment
+- **Accessibility**: Built with accessibility in mind, following WCAG guidelines
+- **Modern UI**: Clean, intuitive interface with smooth animations and transitions
 
-### `npm start`
+## Technology Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React, Tailwind CSS, Framer Motion
+- **Authentication**: Netlify Identity / Supabase Auth
+- **API**: Netlify Functions
+- **Data Source**: CourtListener API
+- **Deployment**: Netlify
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js 18.x or higher
+- npm 9.x or higher
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/patriotnewsactivism/updated-civil-rights-tool.git
+   cd updated-civil-rights-tool
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-### `npm run eject`
+4. Open your browser and navigate to:
+   ```
+   http://localhost:5173
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Development
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+/
+├── netlify/            # Netlify configuration and functions
+│   └── functions/      # Serverless functions
+├── public/             # Static assets
+├── src/
+│   ├── components/     # React components
+│   │   ├── ui/         # UI components
+│   │   └── ...         # Feature components
+│   ├── context/        # React context providers
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utility libraries
+│   └── utils/          # Helper functions
+├── index.html          # HTML entry point
+├── netlify.toml        # Netlify configuration
+└── package.json        # Project dependencies and scripts
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Available Scripts
 
-## Learn More
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run preview` - Preview the production build locally
+- `npm run format` - Format code with Prettier
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Authentication
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The application uses Netlify Identity for authentication. To enable authentication:
 
-### Code Splitting
+1. Deploy the site to Netlify
+2. Enable Identity in the Netlify dashboard
+3. Configure registration preferences (open or invite-only)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## API Integration
 
-### Analyzing the Bundle Size
+The application uses the CourtListener API to fetch case data. The API is accessed through Netlify Functions to protect API keys and provide a consistent interface.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Contributing
 
-### Making a Progressive Web App
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Advanced Configuration
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-### Deployment
+## Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Data provided by [CourtListener](https://www.courtlistener.com/)
+- Built with [React](https://reactjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
+- Deployed on [Netlify](https://www.netlify.com/)
