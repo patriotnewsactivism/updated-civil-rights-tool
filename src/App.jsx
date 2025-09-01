@@ -1,123 +1,262 @@
-import { useEffect, useState } from 'react';
-import { Navbar } from './components/Navbar';
-import { Search } from './components/Search';
-import { AuthModal } from './components/AuthModal';
-import { auth, getCurrentUser, identityEnabled } from './lib/auth';
-import { useTheme } from './context/ThemeContext';
-import { useToast } from './context/ToastContext';
-import './index.css';
+import React, { useState } from 'react';
+import { 
+  Shield, 
+  Search, 
+  Gavel, 
+  BookOpen, 
+  FileText, 
+  Users, 
+  User,
+  Scale,
+  ChevronDown,
+  Menu,
+  X
+} from 'lucide-react';
 
-export default function App() {
-  const [authed, setAuthed] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [idEnabled, setIdEnabled] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { theme } = useTheme();
-  const toast = useToast();
+const App = () => {
+  const [activeTab, setActiveTab] = useState('home');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
-  // Check authentication status and identity service availability on mount
-  useEffect(() => { 
-    async function initializeAuth() {
-      try {
-        // Check if identity service is enabled
-        const identityStatus = await identityEnabled();
-        setIdEnabled(identityStatus);
-        
-        // Check if user is already authenticated
-        const user = await getCurrentUser();
-        if (user) {
-          setAuthed(true);
-          toast.success(`Welcome back, ${user.email}`);
-        }
-      } catch (error) {
-        console.error("Authentication initialization error:", error);
-        toast.error("Failed to initialize authentication");
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    initializeAuth();
-  }, [toast]);
+  const navItems = [
+    { id: 'home', label: 'Home', icon: Shield },
+    { id: 'search', label: 'Search Cases', icon: Search },
+    { id: 'resources', label: 'Resources', icon: BookOpen },
+    { id: 'upload', label: 'Upload', icon: FileText },
+    { id: 'dashboard', label: 'Dashboard', icon: Users, requiresAuth: true },
+  ];
   
-  // Handle user logout
-  async function handleLogout() { 
-    try { 
-      await auth.logout(); 
-      setAuthed(false);
-      toast.info("You have been signed out");
-    } catch (e) { 
-      console.error("Logout error:", e);
-      toast.error("Failed to sign out");
-    }
-  }
+  const filteredNavItems = navItems.filter(item => 
+    !item.requiresAuth || isAuthenticated
+  );
   
-  // Handle successful authentication
-  function handleSuccessfulAuth() {
-    setAuthed(true);
-    setAuthOpen(false);
-    toast.success("Successfully signed in");
-  }
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log('Searching for:', searchQuery);
+    // Add search logic here
+  };
+  
+  const toggleAuth = () => {
+    setIsAuthenticated(!isAuthenticated);
+  };
   
   return (
-    <div className={`min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 ${theme}`}>
-      <Navbar 
-        authed={authed} 
-        onAuthOpen={() => setAuthOpen(true)} 
-        onLogout={handleLogout} 
-      />
-      
-      <main className="flex-grow">
-        <section className="bg-gradient-to-b from-brand-50 to-transparent dark:from-gray-800 dark:to-transparent">
-          <div className="mx-auto max-w-6xl px-4 py-12">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 sm:text-3xl">
-              Search U.S. civil rights case law
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-400">
-              Fast, public search across court opinions. Create an account to keep your findings.
-            </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Scale className="h-8 w-8 text-blue-600 mr-3" />
+              <h1 className="text-xl font-bold text-gray-900">
+                Civil Rights Legal Tool
+              </h1>
+            </div>
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex space-x-8">
+              {filteredNavItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeTab === item.id
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </nav>
+            
+            {/* Auth Button & Mobile Menu */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleAuth}
+                className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <User className="h-4 w-4 mr-2" />
+                {isAuthenticated ? 'Sign Out' : 'Sign In'}
+              </button>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
           </div>
-        </section>
+        </div>
         
-        {loading ? (
-          <div className="mx-auto mt-6 max-w-6xl px-4">
-            <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-600 dark:text-gray-400">
-              <div className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-brand-600 dark:text-brand-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Loading application...
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t bg-white">
+            <nav className="px-4 py-2 space-y-1">
+              {filteredNavItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeTab === item.id
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        )}
+      </header>
+      
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'home' && (
+          <div className="space-y-8">
+            {/* Hero Section */}
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+                Search U.S. Civil Rights Case Law
+              </h2>
+              <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                Fast, public search across court opinions. Create an account to keep your findings.
+              </p>
+            </div>
+            
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <form onSubmit={handleSearch} className="relative">
+                <div className="flex">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search civil rights opinions, e.g., 'first amendment'..."
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <Search className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Advanced Search
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Search through thousands of civil rights cases with powerful filtering options.
+                </p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <BookOpen className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Legal Resources
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Access templates, guides, and educational materials for civil rights advocacy.
+                </p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Community
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Connect with other legal professionals and civil rights advocates.
+                </p>
               </div>
             </div>
           </div>
-        ) : (
-          <>
-            {idEnabled === false && (
-              <div className="mx-auto mt-6 max-w-6xl px-4">
-                <div className="rounded-2xl border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 p-4 text-sm text-yellow-900 dark:text-yellow-200">
-                  Identity is not enabled on this site. Enable Identity in Netlify to allow account creation.
-                </div>
-              </div>
-            )}
-            
-            <Search />
-          </>
+        )}
+        
+        {activeTab === 'search' && (
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Search Cases</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <p className="text-gray-600">Case search functionality coming soon...</p>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'resources' && (
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Legal Resources</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <p className="text-gray-600">Legal resources and templates coming soon...</p>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'upload' && (
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Upload Case</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <p className="text-gray-600">Case upload functionality coming soon...</p>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'dashboard' && isAuthenticated && (
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <p className="text-gray-600">Welcome to your dashboard!</p>
+            </div>
+          </div>
         )}
       </main>
       
-      <AuthModal 
-        open={authOpen} 
-        onClose={() => setAuthOpen(false)} 
-        onAuthed={handleSuccessfulAuth} 
-      />
-      
-      <footer className="mt-auto border-t border-gray-200 dark:border-gray-800 py-8 text-center text-xs text-gray-500 dark:text-gray-400">
-        <div className="mx-auto max-w-6xl px-4">
-          <p>Built for research & education. Sources via CourtListener.</p>
-          <p className="mt-2">© {new Date().getFullYear()} Constitutional Rights Research</p>
+      {/* Footer */}
+      <footer className="bg-white border-t mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center text-sm text-gray-500">
+            <p>© {new Date().getFullYear()} Civil Rights Legal Tool. All rights reserved.</p>
+            <p className="mt-2">Built for research & education. Sources via CourtListener.</p>
+          </div>
         </div>
       </footer>
     </div>
   );
-}
+};
+
+export default App;

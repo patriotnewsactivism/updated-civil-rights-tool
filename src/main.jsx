@@ -1,17 +1,16 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { ThemeProvider } from './context/ThemeContext';
-import { ToastProvider } from './context/ToastContext';
 import './index.css';
 
 const el = document.getElementById('root');
-createRoot(el).render(
+if (!el) {
+  throw new Error('Could not find root element');
+}
+
+const root = createRoot(el);
+root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <ToastProvider>
-        <App />
-      </ToastProvider>
-    </ThemeProvider>
+    <App />
   </React.StrictMode>
 );
