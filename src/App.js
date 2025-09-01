@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 
 // Original CivilRightsLegalTool component (imported from App.js)
-import LegalToolkit from './components/LegalToolkit';
+import CivilRightsLegalTool from './components/CivilRightsLegalTool.js';
 
 const App = () => {
   const [activeView, setActiveView] = useState('home');
@@ -246,7 +246,7 @@ const App = () => {
                                 <ul className="mt-1 space-y-1">
                                   {results.circuitInfo.districts.map((district, index) => (
                                     <li key={index} className="text-sm text-gray-600 dark:text-gray-400">
-                                      • {district}
+                                      â€¢ {district}
                                     </li>
                                   ))}
                                 </ul>

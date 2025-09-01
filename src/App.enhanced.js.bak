@@ -1,5 +1,4 @@
-﻿import { User } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -389,7 +388,7 @@ const App = () => {
                 </div>
               </div>
               <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                © {new Date().getFullYear()} Civil Rights Legal Tool. All rights reserved.
+                Â© {new Date().getFullYear()} Civil Rights Legal Tool. All rights reserved.
               </div>
             </div>
           </footer>
@@ -400,4 +399,3 @@ const App = () => {
 };
 
 export default App;
-
