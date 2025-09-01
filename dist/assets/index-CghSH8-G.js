@@ -42,4 +42,4 @@ var P={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24"
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */if(!V)throw new Error("Could not find root element");N.createRoot(V).render(f.jsx(p.StrictMode,{children:f.jsx(A,{})}));
-//# sourceMappingURL=index-CgRAiddy.js.map
+//# sourceMappingURL=index-CghSH8-G.js.map
