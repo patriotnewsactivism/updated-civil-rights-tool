@@ -1,182 +1,131 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-:root {
-  --brand-50: #f0f9ff;
-  --brand-100: #e0f2fe;
-  --brand-200: #bae6fd;
-  --brand-300: #7dd3fc;
-  --brand-400: #38bdf8;
-  --brand-500: #0ea5e9;
-  --brand-600: #0284c7;
-  --brand-700: #0369a1;
-  --brand-800: #075985;
-  --brand-900: #0c4a6e;
-  --brand-950: #082f49;
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Dark mode variables */
-.dark {
-  --brand-50: #082f49;
-  --brand-100: #0c4a6e;
-  --brand-200: #075985;
-  --brand-300: #0369a1;
-  --brand-400: #0284c7;
-  --brand-500: #0ea5e9;
-  --brand-600: #38bdf8;
-  --brand-700: #7dd3fc;
-  --brand-800: #bae6fd;
-  --brand-900: #e0f2fe;
-  --brand-950: #f0f9ff;
-}
-
-/* Base styles */
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: white;
 }
 
-/* Focus styles */
-*:focus-visible {
-  @apply outline-none ring-2 ring-brand-500 ring-offset-2;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-/* Animation utilities */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Tailwind-like Utility Classes */
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
-@keyframes scaleIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
 }
 
-@keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+/* Accessibility Focus Styles */
+:focus {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
 }
 
-.animate-scaleIn {
-  animation: scaleIn 0.3s ease-out;
-}
-
-.animate-slideDown {
-  animation: slideDown 0.3s ease-out;
-}
-
-.animate-slideUp {
-  animation: slideUp 0.3s ease-out;
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Custom component styles */
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+/* Skip to content link for accessibility */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
 }
 
-/* Dark mode transitions */
-.transition-colors {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+.skip-to-content:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  background: #0ea5e9;
+  color: white;
+  font-weight: 600;
+  z-index: 9999;
 }
 
-/* Custom color classes */
-.bg-brand-50 { background-color: var(--brand-50); }
-.bg-brand-100 { background-color: var(--brand-100); }
-.bg-brand-200 { background-color: var(--brand-200); }
-.bg-brand-300 { background-color: var(--brand-300); }
-.bg-brand-400 { background-color: var(--brand-400); }
-.bg-brand-500 { background-color: var(--brand-500); }
-.bg-brand-600 { background-color: var(--brand-600); }
-.bg-brand-700 { background-color: var(--brand-700); }
-.bg-brand-800 { background-color: var(--brand-800); }
-.bg-brand-900 { background-color: var(--brand-900); }
-.bg-brand-950 { background-color: var(--brand-950); }
-
-.text-brand-50 { color: var(--brand-50); }
-.text-brand-100 { color: var(--brand-100); }
-.text-brand-200 { color: var(--brand-200); }
-.text-brand-300 { color: var(--brand-300); }
-.text-brand-400 { color: var(--brand-400); }
-.text-brand-500 { color: var(--brand-500); }
-.text-brand-600 { color: var(--brand-600); }
-.text-brand-700 { color: var(--brand-700); }
-.text-brand-800 { color: var(--brand-800); }
-.text-brand-900 { color: var(--brand-900); }
-.text-brand-950 { color: var(--brand-950); }
-
-.border-brand-50 { border-color: var(--brand-50); }
-.border-brand-100 { border-color: var(--brand-100); }
-.border-brand-200 { border-color: var(--brand-200); }
-.border-brand-300 { border-color: var(--brand-300); }
-.border-brand-400 { border-color: var(--brand-400); }
-.border-brand-500 { border-color: var(--brand-500); }
-.border-brand-600 { border-color: var(--brand-600); }
-.border-brand-700 { border-color: var(--brand-700); }
-.border-brand-800 { border-color: var(--brand-800); }
-.border-brand-900 { border-color: var(--brand-900); }
-.border-brand-950 { border-color: var(--brand-950); }
-
-.ring-brand-50 { --tw-ring-color: var(--brand-50); }
-.ring-brand-100 { --tw-ring-color: var(--brand-100); }
-.ring-brand-200 { --tw-ring-color: var(--brand-200); }
-.ring-brand-300 { --tw-ring-color: var(--brand-300); }
-.ring-brand-400 { --tw-ring-color: var(--brand-400); }
-.ring-brand-500 { --tw-ring-color: var(--brand-500); }
-.ring-brand-600 { --tw-ring-color: var(--brand-600); }
-.ring-brand-700 { --tw-ring-color: var(--brand-700); }
-.ring-brand-800 { --tw-ring-color: var(--brand-800); }
-.ring-brand-900 { --tw-ring-color: var(--brand-900); }
-.ring-brand-950 { --tw-ring-color: var(--brand-950); }
-
-/* Dark mode card styles */
-.dark .card {
-  @apply bg-gray-800 border-gray-700;
+/* Font Size Adjustments for Accessibility */
+html {
+  font-size: 16px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .sm\:hidden {
-    display: none;
+.font-small html {
+  font-size: 14px;
+}
+
+.font-large html {
+  font-size: 18px;
+}
+
+/* High Contrast Mode */
+.high-contrast body {
+  background: black;
+  color: white;
+}
+
+.high-contrast a {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+.high-contrast button {
+  border: 2px solid white;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
-@media (min-width: 641px) {
-  .sm\:inline-block {
-    display: inline-block;
-  }
-}
-
-/* Reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Selection Styling */
+::selection {
+  background-color: rgba(14, 165, 233, 0.3);
+  color: white;
 }

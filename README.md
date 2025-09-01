@@ -1,111 +1,113 @@
 # Constitutional Rights Research Platform
 
-A modern web application for searching and exploring U.S. civil rights case law. This platform provides researchers, students, and legal professionals with an intuitive interface to search through court opinions related to civil rights.
+A comprehensive platform for researching civil rights protections across different jurisdictions in the United States. This application provides tools for analyzing constitutional rights, case law, and jurisdictional variations.
 
 ## Features
 
-- **Advanced Search**: Search across court opinions with filtering by court, date range, and more
-- **User Authentication**: Create an account to save searches and favorite cases
-- **Responsive Design**: Fully responsive interface that works on desktop, tablet, and mobile devices
-- **Dark Mode**: Toggle between light and dark themes for comfortable reading in any environment
-- **Accessibility**: Built with accessibility in mind, following WCAG guidelines
-- **Modern UI**: Clean, intuitive interface with smooth animations and transitions
-
-## Technology Stack
-
-- **Frontend**: React, Tailwind CSS, Framer Motion
-- **Authentication**: Netlify Identity / Supabase Auth
-- **API**: Netlify Functions
-- **Data Source**: CourtListener API
-- **Deployment**: Netlify
+- **Jurisdictional Analysis**: Examine constitutional protections across different federal circuits
+- **Legal Toolkit**: Access tools for understanding Stop and ID laws, public records requests, and constitutional rights
+- **Case Database**: Search and contribute to a database of civil rights cases
+- **Interactive Resources**: Visual maps, charts, and guides for constitutional rights research
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm 9.x or higher
+- Node.js 20.x or later
+- npm 9.x or later
 
 ### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/patriotnewsactivism/updated-civil-rights-tool.git
-   cd updated-civil-rights-tool
+   ```
+   git clone https://github.com/patriotnewsactivism/civil-rights-tool.git
+   cd civil-rights-tool
    ```
 
 2. Install dependencies:
-   ```bash
+   ```
    npm install
    ```
 
 3. Start the development server:
-   ```bash
-   npm run dev
+   ```
+   npm start
    ```
 
-4. Open your browser and navigate to:
-   ```
-   http://localhost:5173
-   ```
+4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-## Development
+## Building for Production
 
-### Project Structure
+To build the app for production:
 
 ```
-/
-├── netlify/            # Netlify configuration and functions
-│   └── functions/      # Serverless functions
-├── public/             # Static assets
-├── src/
-│   ├── components/     # React components
-│   │   ├── ui/         # UI components
-│   │   └── ...         # Feature components
-│   ├── context/        # React context providers
-│   ├── hooks/          # Custom React hooks
-│   ├── lib/            # Utility libraries
-│   └── utils/          # Helper functions
-├── index.html          # HTML entry point
-├── netlify.toml        # Netlify configuration
-└── package.json        # Project dependencies and scripts
+npm run build
 ```
 
-### Available Scripts
+This creates an optimized production build in the `build` folder.
 
-- `npm run dev` - Start the development server
-- `npm run build` - Build the application for production
-- `npm run preview` - Preview the production build locally
-- `npm run format` - Format code with Prettier
+## Deployment
 
-## Authentication
+This application is configured for deployment on Netlify. The `netlify.toml` file contains the necessary configuration.
 
-The application uses Netlify Identity for authentication. To enable authentication:
+### Deploying to Netlify
 
-1. Deploy the site to Netlify
-2. Enable Identity in the Netlify dashboard
-3. Configure registration preferences (open or invite-only)
+1. Push your changes to GitHub
+2. Connect your GitHub repository to Netlify
+3. Configure the build settings:
+   - Build command: `npm ci && npm run build`
+   - Publish directory: `build`
 
-## API Integration
+## Project Structure
 
-The application uses the CourtListener API to fetch case data. The API is accessed through Netlify Functions to protect API keys and provide a consistent interface.
+```
+civil-rights-tool/
+├── public/               # Static files
+├── src/                  # Source code
+│   ├── components/       # Reusable components
+│   │   ├── layout/       # Layout components
+│   │   ├── ui/           # UI components
+│   │   └── ...
+│   ├── pages/            # Page components
+│   │   ├── home/         # Home page
+│   │   ├── search/       # Search page
+│   │   ├── case/         # Case pages
+│   │   └── toolkit/      # Toolkit pages
+│   ├── context/          # React context providers
+│   ├── hooks/            # Custom React hooks
+│   ├── utils/            # Utility functions
+│   ├── lib/              # Library code
+│   ├── assets/           # Assets (images, icons)
+│   ├── App.js            # Main App component
+│   ├── App.css           # App styles
+│   ├── index.js          # Entry point
+│   └── index.css         # Global styles
+├── package.json          # Dependencies and scripts
+├── netlify.toml          # Netlify configuration
+└── README.md             # Project documentation
+```
+
+## Key Technologies
+
+- **React**: UI library
+- **React Router**: Navigation and routing
+- **Tailwind CSS**: Styling
+- **Framer Motion**: Animations
+- **Lucide React**: Icons
+- **Supabase**: Backend database
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Legal Disclaimer
+
+This platform is provided for educational and informational purposes only and does not constitute legal advice. Constitutional law varies by jurisdiction and changes over time. Always consult with a qualified attorney for specific legal guidance tailored to your situation.
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## Contact
 
-- Data provided by [CourtListener](https://www.courtlistener.com/)
-- Built with [React](https://reactjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
-- Deployed on [Netlify](https://www.netlify.com/)
+For questions or support, please contact [your-email@example.com](mailto:your-email@example.com).
