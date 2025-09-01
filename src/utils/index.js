@@ -1,4 +1,4 @@
-﻿// Export all utility functions
+// Export all utility functions
 
 // Array and object utilities
 export * from './arrayUtils';

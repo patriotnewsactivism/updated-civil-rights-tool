@@ -1,5 +1,4 @@
-import { User } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -34,11 +33,12 @@ import {
   FileText,
   Users,
   Eye,
-  BookOpen
+  BookOpen,
+  User
 } from "lucide-react";
 
 // Original CivilRightsLegalTool component (imported from App.js)
-import LegalToolkit from './components/LegalToolkit';
+import CivilRightsLegalTool from './components/CivilRightsLegalTool.js';
 
 const App = () => {
   const [activeView, setActiveView] = useState('home');
@@ -400,4 +400,3 @@ const App = () => {
 };
 
 export default App;
-

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Truncate a string to a maximum length
  * 
  * @param {string} str - String to truncate

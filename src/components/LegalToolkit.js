@@ -1,1 +1,1 @@
-﻿export { default } from './CivilRightsLegalTool';
+export { default } from './CivilRightsLegalTool';

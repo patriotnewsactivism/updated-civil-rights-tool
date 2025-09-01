@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Get the current viewport dimensions
  * 
  * @returns {Object} Viewport dimensions

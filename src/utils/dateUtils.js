@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Format a date to a string
  * 
  * @param {Date|string} date - Date to format

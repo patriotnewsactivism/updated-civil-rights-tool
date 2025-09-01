@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Group an array of objects by a key
  * 
  * @param {Array} array - Array to group

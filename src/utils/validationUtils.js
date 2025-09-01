@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Check if a value is empty (null, undefined, empty string, empty array, empty object)
  * 
  * @param {any} value - Value to check

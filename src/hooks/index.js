@@ -1,4 +1,4 @@
-﻿// Export all hooks
+// Export all hooks
 
 // Form handling
 export { default as useForm } from './useForm';

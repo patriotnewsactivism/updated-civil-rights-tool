@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Focus trap utility for modal dialogs and other UI elements
  * 
  * @param {Element} container - Container element to trap focus within
