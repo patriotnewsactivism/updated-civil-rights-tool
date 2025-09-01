@@ -23,8 +23,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    minify: 'terser',
-    terserOptions: {
+    minify: 'esbud',
+    esbuildOptions: {
       compress: {
         drop_console: true,
       },
