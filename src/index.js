@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -17,3 +18,11 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
+=======
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);
+>>>>>>> 44d83632939adeeb968f4198fc99fe9673e938f7
