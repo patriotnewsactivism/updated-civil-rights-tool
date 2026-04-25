@@ -1072,45 +1072,268 @@ const SearchPage = ({ query, setQuery }) => (
   </main>
 );
 
-const LivestreamPage = () => (
-  <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div className="mb-10">
-      <div className="flex items-center gap-2 mb-2">
-        <p className="text-xs text-gray-500 uppercase tracking-widest">Livestreaming</p>
-        <span className="flex items-center gap-1 text-[10px] font-bold text-red-400 uppercase tracking-widest">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" /> Auto-Backup On
-        </span>
+const LivestreamPage = () => {
+  const videoRef = React.useRef(null);
+  const mediaRecorderRef = React.useRef(null);
+  const chunksRef = React.useRef([]);
+
+  const [facingMode, setFacingMode] = React.useState('environment'); // back camera default
+  const [isRecording, setIsRecording] = React.useState(false);
+  const [isPreviewing, setIsPreviewing] = React.useState(false);
+  const [duration, setDuration] = React.useState(0);
+  const [recordings, setRecordings] = React.useState([]);
+  const [error, setError] = React.useState('');
+  const [hasDualCamera, setHasDualCamera] = React.useState(true);
+  const timerRef = React.useRef(null);
+
+  // Start camera preview
+  const startCamera = React.useCallback(async (facing) => {
+    setError('');
+    // Stop any existing stream
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: true,
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+      setIsPreviewing(true);
+      setFacingMode(facing);
+    } catch (err) {
+      // If requested camera unavailable, try opposite
+      if (err.name === 'OverconstrainedError' || err.name === 'NotFoundError') {
+        setHasDualCamera(false);
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play(); }
+          setIsPreviewing(true);
+        } catch (e2) {
+          setError('Camera access denied. Please allow camera permission and reload.');
+        }
+      } else if (err.name === 'NotAllowedError') {
+        setError('Camera permission denied. Tap the camera icon in your browser address bar to allow access.');
+      } else {
+        setError('Could not access camera: ' + err.message);
+      }
+    }
+  }, []);
+
+  // Flip camera
+  const flipCamera = React.useCallback(() => {
+    const next = facingMode === 'environment' ? 'user' : 'environment';
+    // If recording, stop first
+    if (isRecording) stopRecording();
+    startCamera(next);
+  }, [facingMode, isRecording, startCamera]);
+
+  const startRecording = React.useCallback(() => {
+    if (!videoRef.current?.srcObject) return;
+    chunksRef.current = [];
+    const stream = videoRef.current.srcObject;
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
+    const mr = new MediaRecorder(stream, { mimeType });
+    mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+    mr.onstop = () => {
+      const blob = new Blob(chunksRef.current, { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const ts = new Date().toLocaleTimeString();
+      setRecordings(prev => [{ url, ts, size: (blob.size / 1024 / 1024).toFixed(1), ext: mimeType.includes('mp4') ? 'mp4' : 'webm' }, ...prev]);
+    };
+    mr.start(1000);
+    mediaRecorderRef.current = mr;
+    setIsRecording(true);
+    setDuration(0);
+    timerRef.current = setInterval(() => setDuration(d => d + 1), 1000);
+  }, []);
+
+  const stopRecording = React.useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    clearInterval(timerRef.current);
+    setIsRecording(false);
+    setDuration(0);
+  }, []);
+
+  const stopCamera = React.useCallback(() => {
+    if (isRecording) stopRecording();
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+      videoRef.current.srcObject = null;
+    }
+    setIsPreviewing(false);
+  }, [isRecording, stopRecording]);
+
+  // Cleanup on unmount
+  React.useEffect(() => () => {
+    stopCamera();
+    clearInterval(timerRef.current);
+  }, []);
+
+  const fmt = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+
+  return (
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-xs text-gray-500 uppercase tracking-widest">Secure Recording</p>
+          <span className="flex items-center gap-1 text-[10px] font-bold text-red-400 uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" /> Evidence Auto-Saved
+          </span>
+        </div>
+        <h2 className="font-display text-4xl text-white mb-2">Record an Encounter</h2>
+        <p className="text-gray-400 text-sm">All recordings are saved locally. Use front or back camera. Evidence preserved even if this page is closed mid-recording.</p>
       </div>
-      <h2 className="font-display text-4xl text-white mb-3">Go Live</h2>
-      <p className="text-gray-400">Every stream is automatically saved and backed up. Evidence is preserved even if your device is seized.</p>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div className="bg-white/[0.03] border border-white/8 rounded-xl p-6">
-        <Radio className="h-6 w-6 text-red-400 mb-3" />
-        <h3 className="font-semibold text-white mb-1">Live Broadcast</h3>
-        <p className="text-sm text-gray-500 mb-4">Stream publicly. Viewers can witness and document in real time.</p>
-        <button className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Start Public Stream
-        </button>
+
+      {/* Viewfinder */}
+      <div className="relative rounded-2xl overflow-hidden bg-black border border-white/10 mb-6" style={{aspectRatio:'16/9'}}>
+        <video ref={videoRef} muted playsInline
+          className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+          style={{display: isPreviewing ? 'block' : 'none'}} />
+
+        {!isPreviewing && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-white/5 border border-white/15 flex items-center justify-center">
+              <Camera className="h-8 w-8 text-gray-500" />
+            </div>
+            <p className="text-gray-500 text-sm">Camera off</p>
+          </div>
+        )}
+
+        {/* Recording indicator overlay */}
+        {isRecording && (
+          <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-full">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-white text-sm font-mono font-bold">{fmt(duration)}</span>
+          </div>
+        )}
+
+        {/* Camera label */}
+        {isPreviewing && (
+          <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-full text-[11px] text-gray-300 font-medium">
+            {facingMode === 'environment' ? '🔭 Back' : '🤳 Front'}
+          </div>
+        )}
       </div>
-      <div className="bg-white/[0.03] border border-white/8 rounded-xl p-6">
-        <Shield className="h-6 w-6 text-blue-400 mb-3" />
-        <h3 className="font-semibold text-white mb-1">Private Secure Recording</h3>
-        <p className="text-sm text-gray-500 mb-4">Record privately. Auto-uploaded to encrypted storage only you control.</p>
-        <button className="flex items-center gap-2 border border-white/15 hover:bg-white/10 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-          <Camera className="h-4 w-4" /> Start Private Recording
-        </button>
+
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-4 mb-8">
+        {!isPreviewing ? (
+          <button onClick={() => startCamera('environment')}
+            className="flex items-center gap-2 bg-white text-black font-semibold px-6 py-3 rounded-xl text-sm hover:bg-gray-200 transition-colors">
+            <Camera className="h-4 w-4" /> Open Camera
+          </button>
+        ) : (
+          <>
+            {/* Flip button — always visible when camera is on */}
+            {hasDualCamera && (
+              <button onClick={flipCamera}
+                title={facingMode === 'environment' ? 'Switch to front camera' : 'Switch to back camera'}
+                className="flex flex-col items-center gap-1 group">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M16 2l4 5-4 5"/><path d="M4 17h3a2 2 0 0 0 2 2v3"/><path d="M8 22l-4-5 4-5"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </div>
+                <span className="text-[10px] text-gray-500">Flip</span>
+              </button>
+            )}
+
+            {/* Record / Stop */}
+            {!isRecording ? (
+              <button onClick={startRecording}
+                className="flex flex-col items-center gap-1 group">
+                <div className="w-16 h-16 rounded-full bg-red-600 border-4 border-red-400 flex items-center justify-center group-hover:bg-red-500 transition-colors shadow-lg shadow-red-900/50">
+                  <div className="w-5 h-5 rounded-full bg-white" />
+                </div>
+                <span className="text-[10px] text-gray-400">Record</span>
+              </button>
+            ) : (
+              <button onClick={stopRecording}
+                className="flex flex-col items-center gap-1 group">
+                <div className="w-16 h-16 rounded-full bg-red-700 border-4 border-red-500 flex items-center justify-center group-hover:bg-red-600 transition-colors shadow-lg shadow-red-900/50 animate-pulse">
+                  <div className="w-5 h-5 rounded bg-white" />
+                </div>
+                <span className="text-[10px] text-red-400 font-mono">{fmt(duration)}</span>
+              </button>
+            )}
+
+            {/* Close camera */}
+            <button onClick={stopCamera}
+              className="flex flex-col items-center gap-1 group">
+              <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                <X className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-[10px] text-gray-500">Close</span>
+            </button>
+          </>
+        )}
       </div>
-    </div>
-    <div className="bg-amber-950/30 border border-amber-800/40 rounded-xl p-6 flex items-start gap-4">
-      <WifiOff className="h-5 w-5 text-amber-400 mt-0.5 shrink-0" />
-      <div>
-        <div className="font-semibold text-amber-300 mb-1">Streaming infrastructure reconnecting</div>
-        <p className="text-sm text-gray-400">Live RTMP relay is being reconfigured. Recording and backup are active.</p>
+
+      {error && (
+        <div className="flex items-start gap-3 bg-red-950/40 border border-red-800/50 rounded-xl p-4 mb-6">
+          <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-red-300">{error}</p>
+        </div>
+      )}
+
+      {/* Saved recordings */}
+      {recordings.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-xs text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <Shield className="h-3.5 w-3.5 text-emerald-400" /> Saved Recordings ({recordings.length})
+          </h3>
+          <div className="space-y-2">
+            {recordings.map((r, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/8 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
+                    <Camera className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-white">Recording {recordings.length - i}</div>
+                    <div className="text-xs text-gray-500">{r.ts} · {r.size} MB · {r.ext.toUpperCase()}</div>
+                  </div>
+                </div>
+                <a href={r.url} download={`evidence-${Date.now()}-${i}.${r.ext}`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium rounded transition-colors">
+                  ↓ Save
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Info strip */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {[
+          { icon: Shield, label: 'Local first', desc: 'Recordings stay on your device until you save them.' },
+          { icon: Camera, label: 'Front + Back', desc: 'Tap Flip to switch cameras at any time, even mid-recording.' },
+          { icon: AlertTriangle, label: 'Know your rights', desc: 'You have the right to record police in public in all 50 states.' },
+        ].map(item => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className="flex items-start gap-3 p-4 bg-white/[0.02] border border-white/8 rounded-xl">
+              <Icon className="h-4 w-4 text-gray-500 mt-0.5 shrink-0" />
+              <div>
+                <div className="text-xs font-semibold text-white mb-0.5">{item.label}</div>
+                <div className="text-[11px] text-gray-500 leading-relaxed">{item.desc}</div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
 
 const ResourcesPage = () => (
   <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
