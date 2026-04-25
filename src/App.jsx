@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { NewsroomPage } from './NewsroomPage';
 import {
   Scale, Search, BookOpen, FileText, Users, User, Menu, X,
   ChevronRight, Shield, AlertTriangle, Radio, MapPin, ArrowRight,
   Camera, WifiOff, BadgeCheck, Building2, Globe, CheckCircle2,
   Mic, Phone, ExternalLink, BarChart2, Briefcase, Eye,
-  Loader2, RefreshCw, TrendingUp, Clock
+  Loader2, RefreshCw, TrendingUp, Clock, Newspaper
 } from 'lucide-react';
 
 // ─── Supabase client ───────────────────────────────────────────────
@@ -1167,6 +1168,7 @@ const App = () => {
     { id:'livestream', label:'Live',        icon:Radio, dot:true },
     { id:'resources',  label:'Resources',   icon:BookOpen },
     { id:'verify',     label:'Get Verified', icon:BadgeCheck },
+    { id:'newsroom',   label:'Newsroom',     icon:Newspaper },
   ];
 
   return (
@@ -1248,6 +1250,7 @@ const App = () => {
       {activeTab === 'livestream' && <LivestreamPage />}
       {activeTab === 'resources'  && <ResourcesPage />}
       {activeTab === 'upload'     && <UploadPage />}
+      {activeTab === 'newsroom'   && <NewsroomPage nav={nav} />}
 
       <footer className="border-t border-white/5 mt-20 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
